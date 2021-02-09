@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Erp_TEST.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210208223255_FixProgects")]
-    partial class FixProgects
+    [Migration("20210209105516_GangesProgect")]
+    partial class GangesProgect
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -94,14 +94,9 @@ namespace Erp_TEST.Data.Migrations
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ProjectTypeId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Projects");
                 });
@@ -383,12 +378,6 @@ namespace Erp_TEST.Data.Migrations
                     b.HasOne("Erp_TEST.Models.ProjectType", "ProjectType")
                         .WithMany()
                         .HasForeignKey("ProjectTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Erp_TEST.Models.DbModel.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

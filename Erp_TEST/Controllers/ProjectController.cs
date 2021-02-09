@@ -1,4 +1,5 @@
 ﻿using Erp_TEST.Data;
+using Erp_TEST.Helper.DateFormaters;
 using Erp_TEST.Models;
 using Erp_TEST.Models.DbModel;
 using Erp_TEST.Models.ViewModel.Projects;
@@ -69,6 +70,7 @@ namespace Erp_TEST.Controllers
                     Title = pr.Title,
                     Description = pr.Description,
                     End = pr.End.HasValue ? pr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
+                    
                     Start = pr.Start.HasValue ? pr.Start.Value.ToString("dd.MM.yyyy") : "",
                     Role = pr.Role,
                     Link = string.IsNullOrEmpty(pr.Link) ? "" : pr.Link,
@@ -116,7 +118,7 @@ namespace Erp_TEST.Controllers
             //var addedRoles = roles.Except(roles).ToList();
 
             string userRole = "";
-            if (userName != null)
+           // if (userName != null)
             {
                 var curentuser = allUsers.FirstOrDefault(u => u.AccountUser.Email == userName);
 
@@ -149,11 +151,13 @@ namespace Erp_TEST.Controllers
                     newProduct.Created = DateTime.Now;
                     newProduct.Updated = DateTime.Now;
 
+                
+                 
                     dbContext.Projects.Add(newProduct);
                     await dbContext.SaveChangesAsync();
 
 
-                    return RedirectToAction(nameof(UploadFile));
+                    return RedirectToAction(nameof(UploadFile), new { prId = newProduct.Id });
                 }
                 else
                 {
@@ -183,7 +187,8 @@ namespace Erp_TEST.Controllers
             return View("/Views/Projects/UploadFile.cshtml", model);
         }
 
-        public async Task<IActionResult> UploadFileSubmitAsync(UploadFileSubmitVm model, IFormFile File)
+        [HttpPost]
+        public async Task<IActionResult> UploadFileSubmitAsync(AddFileVm model, IFormFile File)
         {
 
             var prAll = dbContext.Projects             
@@ -209,6 +214,9 @@ namespace Erp_TEST.Controllers
                     DateCreate = DateTime.Now
                 };
 
+                dbContext.DbFiles.Add(newFile);
+                dbContext.SaveChanges();
+
 
                 updatePr.Attachments.Add(newFile);
                 updatePr.Updated = DateTime.Now;
@@ -219,17 +227,71 @@ namespace Erp_TEST.Controllers
 
          
 
-            return RedirectToAction(nameof(EditProject), new { prId = updatePr.Id });
+            return RedirectToAction(nameof(EditProject), new { Id = updatePr.Id });
 
         }
-        public IActionResult EditProject(Guid prId)
+
+        public IActionResult AddSkill(Guid prId)
+        {
+            var prAll = dbContext.Projects
+                .Include(p => p.ProjectType)
+                .Include(p => p.Attachments)
+                .Include(p => p.Skills)
+                .ToList();
+            var updatePr = prAll.FirstOrDefault(p => p.Id == prId);
+
+            var model = new AddFileVm()
+            {
+                Id = updatePr.Id,
+                Tytle = updatePr.Title,
+
+
+            };
+
+            return View("/Views/Projects/AddSkill.cshtml", model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddSkillSubmit(AddFileVm model)
         {
 
             var prAll = dbContext.Projects
                 .Include(p => p.Attachments)
                 .ToList();
-            var updatePr = prAll.FirstOrDefault(p => p.Id == prId);
+            var updatePr = prAll.FirstOrDefault(p => p.Id == model.Id);
+            var newskill = new Skill()
+            {
+                Id = Guid.NewGuid(),
+                Name = model.Tytle,
+               // ProjectId = updatePr.Id
+            };
 
+
+            if(updatePr.Skills == null)
+            {
+                updatePr.Skills = new List<Skill>()
+                { };
+            }
+            dbContext.Skills.Add(newskill);
+            updatePr.Skills.Add(newskill);
+
+            await dbContext.SaveChangesAsync();
+
+            return RedirectToAction(nameof(EditProject), new { Id = updatePr.Id });
+
+        }
+
+
+            public IActionResult EditProject(Guid Id)
+        {
+
+            var prAll = dbContext.Projects
+                .Include(p => p.Attachments)
+                .Include(p => p.ProjectType)
+                .Include(p => p.Skills)
+                .ToList();
+            var updatePr = prAll.FirstOrDefault(p => p.Id == Id);
+
+            var allTypes = this.dbContext.Types.ToList();
 
             var model = new EditProjectVm()
             {
@@ -237,18 +299,19 @@ namespace Erp_TEST.Controllers
                 Id = updatePr.Id,
                 Title = updatePr.Title,
                 Description = updatePr.Description,
-                End = updatePr.End.HasValue ? updatePr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
-                Start = updatePr.Start.HasValue ? updatePr.Start.Value.ToString("dd.MM.yyyy") : "",
+                End = updatePr.End != null || updatePr.End.HasValue ? updatePr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
+                
+                Start = updatePr.Start != null || updatePr.Start.HasValue ? updatePr.Start.Value.ToString("dd.MM.yyyy") : "",
                 Role = updatePr.Role,
                 Link = string.IsNullOrEmpty(updatePr.Link) ? "" : updatePr.Link,
-                Skills = updatePr.Skills.Count != 0 ? string.Join(", ", updatePr.Skills.Select(s => s.Name).ToArray()) : "",
+               // Skills = updatePr.Skills != null || updatePr.Skills.Count != 0 ? string.Join(", ", updatePr.Skills.Select(s => s.Name).ToArray()) : "",
                 AttachmentVm = updatePr.Attachments.Select(f => new FileVm()
                 {
                     Id = f.Id,
                     File = f.File,
                     FileName = f.FileName
                 }).ToList(),
-                SkillsVm = updatePr.Skills.Select(s => new SkillVm()
+                SkillsVm = updatePr.Skills == null ? new List<SkillVm>()  : updatePr.Skills.Select(s => new SkillVm()
                 {
                     Id = s.Id,
                     SkillName = s.Name
@@ -256,7 +319,14 @@ namespace Erp_TEST.Controllers
 
                 ProjectType = updatePr.ProjectType.NameType,
                 Create = updatePr.Created.ToString("dd.MM.yyyy"),
-                Update = updatePr.Updated.ToString("dd.MM.yyyy")
+                Update = updatePr.Updated.ToString("dd.MM.yyyy"),
+
+                Types = allTypes.Select(t => new SelectListItem
+                {
+                    Value = t.Id.ToString(),
+                    Text = t.NameType
+
+                }).ToList()
             };
 
             return View("/Views/Projects/EditProject.cshtml", model);
@@ -271,13 +341,52 @@ namespace Erp_TEST.Controllers
                 .ToList();
             var updatePr = prAll.FirstOrDefault(p => p.Id == model.Id);
 
+            var startRes = DateParsers.ddMMyyyy(model.Start);
+            if (startRes.IsValid)
+            {
+                DateTime dateStart = new DateTime(startRes.Value.Year,
+                  startRes.Value.Month,
+                  startRes.Value.Day);
+
+                updatePr.Start = dateStart;
+
+
+            }
+            
+            var endRes = DateParsers.ddMMyyyy(model.End);
+            if (endRes.IsValid)
+            {
+                DateTime dateEnd = new DateTime(startRes.Value.Year,
+                  startRes.Value.Month,
+                  startRes.Value.Day);
+
+
+
+                dateEnd = dateEnd.AddHours(endRes.Value.Hour);
+                dateEnd = dateEnd.AddMinutes(endRes.Value.Minute);
+
+                updatePr.End = dateEnd;
+            }
+            var type = this.dbContext.Types.FirstOrDefault(t => t.Id == model.TypeId);
+
+            updatePr.Title = model.Title;
+            updatePr.Description = model.Description;
+            updatePr.Organization = model.Organization;
+            updatePr.Link = model.Link;
+
+            
+            updatePr.ProjectTypeId =type.Id;
+            updatePr.Updated = DateTime.Now;
+
+            dbContext.Update(updatePr);
+            dbContext.SaveChanges();
 
 
             return RedirectToAction(nameof(Index));
         }
 
 
-            private string getRole()
+        private string getRole()
         {
             var roles = this.roleManager.Roles.ToList();
             //var role = roles.FirstOrDefault(r => r.Name == roleName);
@@ -297,6 +406,58 @@ namespace Erp_TEST.Controllers
                 userRole = "User";
             }
             return userRole;
+        }
+
+       
+        public IActionResult DeleteFile(Guid fileId, Guid prId)
+        {
+            var prAll = dbContext.Projects
+               .Include(p => p.Attachments)
+               .ToList();
+            var updatePr = prAll.FirstOrDefault(p => p.Id == prId);
+
+            var fileAll = dbContext.DbFiles.ToList();
+            var fileFound = fileAll.FirstOrDefault(f => f.Id == fileId);
+
+            updatePr.Attachments.Remove(fileFound);
+            dbContext.DbFiles.Remove(fileFound);
+            dbContext.SaveChanges();
+
+            return RedirectToAction(nameof(EditProject), new { Id = updatePr.Id });
+        }
+         
+        public IActionResult DeleteSkill(Guid skillId, Guid prId)
+        {
+            var prAll = dbContext.Projects
+               .Include(p => p.Attachments)
+               .ToList();
+            var updatePr = prAll.FirstOrDefault(p => p.Id == prId);
+
+            var skillAll = dbContext.Skills.ToList();
+            var skillFound = skillAll.FirstOrDefault(f => f.Id == skillId);
+
+            updatePr.Skills.Remove(skillFound);
+            dbContext.Skills.Remove(skillFound);
+            dbContext.SaveChanges();
+
+            return RedirectToAction(nameof(EditProject), new { Id = updatePr.Id });
+        }
+
+        public IActionResult DeleteAll()
+        {
+            var prAll = dbContext.Projects
+               .Include(p => p.Attachments)
+               .ToList();
+
+            foreach(var pr in prAll)
+            {
+                dbContext.Projects.Remove(pr);
+            }
+         
+           
+            dbContext.SaveChanges();
+
+            return RedirectToAction(nameof(Index);
         }
 
     }

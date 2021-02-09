@@ -1,7 +1,7 @@
 ﻿@model Erp_TEST.Models.ViewModel.Projects.AddFileVm
 
 <div class="row" id="container">
-    <form method="post" asp-action="UploadFileSubmit" asp-controller="Project" enctype="multipart/form-data">
+    <form method="post" asp-action="AddSkillSubmit" asp-controller="Project" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <input type="hidden" name="Id" value="@Model.Id" />
@@ -9,28 +9,20 @@
         <div>
 
             <br>
-            <p>Завантажити файл - <b>@Model.Tytle</b> </p>
+            <p>Добавити skill - <b>@Model.Tytle</b> </p>
 
         </div>
         <div>
-
-            <lable class="row">
-
-                <div class="col-md-10">
-                    <input type="file" name="File" class="form-control" />
-                </div>
-
-            </lable>
+            <input type="text" name="Tytle" class="form-control" />
         </div>
-
 
         <br />
         <hr />
         <button type="submit" class="btn btn-primary"><b>Save</b></button>
 
         @*<a href="@Url.Action("UploadFileSubmit", "Project", new { prId = Model.Id })">
-            <b>Зберегти</b>
-        </a>*@
+                <b>Зберегти</b>
+            </a>*@
     </form>
 </div>
 

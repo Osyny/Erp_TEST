@@ -8,6 +8,8 @@
   <ItemGroup>
     <Compile Remove="Data\Migrations\20210208164003_AddTables.cs" />
     <Compile Remove="Data\Migrations\20210208164003_AddTables.Designer.cs" />
+    <Compile Remove="Data\Migrations\20210208223255_FixProgects.cs" />
+    <Compile Remove="Data\Migrations\20210208223255_FixProgects.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +18,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\files\" />
   </ItemGroup>
 
 </Project>

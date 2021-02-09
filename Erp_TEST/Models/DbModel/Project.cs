@@ -33,7 +33,6 @@ namespace Erp_TEST.Models.DbModel
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
 
-        public User User { get; set; }
-        public Guid UserId { get; set; }
+        
     }
 }

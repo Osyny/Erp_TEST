@@ -86,7 +86,7 @@ namespace Erp_TEST.Controllers
                 var result =
                     await this.signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
-                return RedirectToAction("Index", "Home");
+               // return RedirectToAction("Index", "Home");
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index", "Home");

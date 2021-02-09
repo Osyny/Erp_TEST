@@ -3,10 +3,22 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Erp_TEST.Data.Migrations
 {
-    public partial class FixProgects : Migration
+    public partial class GangesProgect : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Projects_ListUsers_UserId",
+                table: "Projects");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Projects_UserId",
+                table: "Projects");
+
+            migrationBuilder.DropColumn(
+                name: "UserId",
+                table: "Projects");
+
             migrationBuilder.AlterColumn<DateTime>(
                 name: "End",
                 table: "Projects",
@@ -53,6 +65,26 @@ namespace Erp_TEST.Data.Migrations
                 nullable: false,
                 oldClrType: typeof(DateTime),
                 oldNullable: true);
+
+            migrationBuilder.AddColumn<Guid>(
+                name: "UserId",
+                table: "Projects",
+                type: "uniqueidentifier",
+                nullable: false,
+                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_UserId",
+                table: "Projects",
+                column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Projects_ListUsers_UserId",
+                table: "Projects",
+                column: "UserId",
+                principalTable: "ListUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
     }
 }

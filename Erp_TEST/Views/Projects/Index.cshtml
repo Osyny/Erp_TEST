@@ -32,7 +32,7 @@
                 <th>Skills</th>
                 <th>Attachments</th>
                 <th>Type</th>
-                <th>Updated</th>
+                <th>Create</th>
                 <th>Updated</th>
             </tr>
 
@@ -45,8 +45,8 @@
                     <td>@proj.Title</td>
                     <td>@proj.Description</td>
                     <td> @proj.Organization</td>
-                    <td>@proj.</td>
-                    <td>@proj.</td>
+                    <td>@proj.Start</td>
+                    <td>@proj.End</td>
                     <td>@proj.Role</td>
                     <td>@proj.Link</td>
                     <td>@proj.Skills</td>
@@ -55,18 +55,30 @@
                     <td>@proj.Create</td>
                     <td>@proj.Update</td>
                     <td>
-                        <form asp-action="Edit" asp-route-id="@proj.Id" method="post">
-                            <button type="submit">
-                                Редагувати
-                            </button>
-                        </form>
+                        @if (string.IsNullOrEmpty(Model.UserRole))
+                        {
+                            <form asp-action="EditProject" asp-controller="Project" asp-route-id="@proj.Id">
+                                <button type="submit">
+                                    Редагувати
+                                </button>
+                            </form>
+
+                        }
+
                     </td>
-
-
                 </tr>
 
             }
         </tbody>
     </table>
+    @if (string.IsNullOrEmpty(Model.UserRole) && Model.UserRole == "Admin")
+    {
+        <form asp-action="DeleteAll" asp-controller="Project">
+            <button type="submit">
+                Delete all
+            </button>
+        </form>
+    }
+
 </div>
 

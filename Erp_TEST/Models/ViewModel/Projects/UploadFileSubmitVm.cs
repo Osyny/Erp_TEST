@@ -23,6 +23,7 @@ namespace Erp_TEST.Models.ViewModel.Projects
         public string Description { get; set; }
         public string Organization { get; set; }
         public string End { get; set; }
+        public string EndTime { get; set; }
         public string Start { get; set; }
 
         public string Role { get; set; }

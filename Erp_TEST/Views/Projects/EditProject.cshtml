@@ -1,7 +1,7 @@
 ﻿@model Erp_TEST.Models.ViewModel.Projects.EditProjectVm
 
 <div id="container">
-    <h4 id="text"> <b>  Редагувати PROJECT - @Model. </b></h4>
+    <h4 id="text"> <b>  Редагувати  - @Model.Title </b></h4>
 </div>
 <hr />
 
@@ -12,56 +12,115 @@
     <div id="container">
         <div class="form-group">
             <label for="Title"><b>Title</b></label>
-            <input name="Title" class="form-control" />
+            <span>@Model.Title</span>
+            <input name="Title" class="form-control"  value="@Model.Title"/>
         </div>
         <br />
         <div class="form-group">
             <label for="Description"><b>Description</b></label>
-            <input name="Description" class="form-control" />
+            <input name="Description" class="form-control" value="@Model.Description" />
         </div>
         <br />
         <div class="form-group">
             <label for="Organization"><b>Organization</b></label>
-            <input name="Organization" class="form-control" />
+            <input name="Organization" class="form-control" value="@Model.Organization" />
         </div>
         <br />
-        <div style="float: left; width: 49%">
+        <div>
             <label for="Start"><b>Start</b></label>
+            <div for="End"><b>@Model.Start</b></div>
             <input type="date" name="Start" value="@Model.Start" />
         </div>
         <br />
-        <div style="float: left; width: 49%">
+        <div>
             <label for="End"><b>End</b></label>
-            <input type="date" name="End" class="form-control" value="@Model.End" />
+            <div for="End"><b>@Model.End</b></div>
+            <input type="date" name="End" value="@Model.End" />
+            <input type="time" name="End" />
         </div>
+        <br />
+        
         <br />
         <div>
             <label for="File"><b>File</b></label>
             <div id="container">
-                @foreach (var file in Model.AttachmentVm)
-                {
-                    <br />
-                    <label for="File"><b>@file</b></label>
-                    <a href="@Url.Action(  "Edit", "Resume", new { resumeId = Model.Id })">
-                        <b>Delete</b>
-                    </a>
-                    <a href="@Url.Action(  "UploadFile", "Project", new { prId = Model.Id })">
-                        <b>Edit</b>
-                    </a>
-                }
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+
+                            <th></th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @foreach (var file in Model.AttachmentVm)
+                        {
+                            <tr data-productrowid="@file.Id">
+                                <td>@file.File</td>
+                                <td>
+
+                                    <a href="@Url.Action("DeleteFile", "Project", new { fileId = file.Id, prId = Model.Id })">
+                                        <b>Delete</b>
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+
+                <a href="@Url.Action("UploadFile", "Project", new { prId = Model.Id })">
+                    <b>Add</b>
+                </a>
             </div>
 
         </div>
-       
-        <br />
-        <div class="form-group">
-            <label for="Organization"><b>Organization</b></label>
-            <input name="Organization" class="form-control" />
+
+        <div>
+            <label for="File"><b>Skils</b></label>
+            <div id="container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Skill</th>
+
+                            <th></th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @foreach (var sk in Model.SkillsVm)
+                        {
+                            <tr data-productrowid="@sk.SkillName">
+                                <td>@sk.SkillName</td>
+                                <td>
+                                    <div>
+                                        <a href="@Url.Action("DeleteSkill", "Project", new { skillId = sk.Id, prId = Model.Id })">
+                                            <b>Delete</b>
+                                        </a>
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+                <a href="@Url.Action("AddSkill", "Project", new { prId = Model.Id })">
+                    <b>Add</b>
+                </a>
+            </div>
+
         </div>
+
+
         <br />
         <div class="form-group">
             <label for="Link"><b>Link</b></label>
-            <input name="Link" class="form-control" />
+            <input name="Link" class="form-control"  value="@Model.Link"/>
         </div>
 
         <h5> Type :</h5>
@@ -71,7 +130,7 @@
 
 
         <hr />
-        <button type="submit" class="btn btn-primary"><b>Добавити</b></button>
+        <button type="submit" class="btn btn-primary"><b>Edit</b></button>
 
     </div>
 </form>
