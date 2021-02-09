@@ -16,7 +16,7 @@
         }
 
     }
-    @if (user.IsAuthenticated)@*(SignInManager.IsSignedIn(User)*@
+    @if (SignInManager.IsSignedIn(User))
     {
         @*@{
             var isAuthenticated =  layoutDataService.IsAuthenticated();

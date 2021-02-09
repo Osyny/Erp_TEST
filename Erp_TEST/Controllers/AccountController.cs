@@ -87,14 +87,14 @@ namespace Erp_TEST.Controllers
                     await this.signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
                 return RedirectToAction("Index", "Home");
-                //if (result.Succeeded)
-                //{
-                //    return RedirectToAction("Index", "Home");
-                //}
-                //else
-                //{
-                //    ModelState.AddModelError("", "Неправильный логин и (или) пароль");
-                //}
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Неправильный логин и (или) пароль");
+                }
             }
             return View(model);
         }
