@@ -86,7 +86,15 @@ namespace Erp_TEST.Controllers
                 var result =
                     await this.signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
-               // return RedirectToAction("Index", "Home");
+                var user = await this.userManager.FindByIdAsync("506330e7-25f7-4c18-85ff-e1bce8f89c1a");
+
+                //var token = await this.userManager.GeneratePasswordResetTokenAsync(user);
+
+                ////  var res = await this.userManager.ResetPasswordAsync(user, token, "MyN3wP@ssw0rd");
+                //await this.userManager.RemovePasswordAsync(user);
+               // await this.userManager.AddPasswordAsync(user, model.Password);
+
+                // return RedirectToAction("Index", "Home");
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index", "Home");
@@ -107,6 +115,8 @@ namespace Erp_TEST.Controllers
             await this.signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+
     }
 }
 
