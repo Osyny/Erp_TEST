@@ -9,6 +9,8 @@ namespace Erp_TEST.Models.ViewModel.Projects
     {
         public List<ProjectViewModel> ProjectsVm{ get; set; }
         public string UserRole{ get; set; }
+        public string TitleOrganizationType{ get; set; }
+      //  public string Curent{ get; set; }
     }
 
 

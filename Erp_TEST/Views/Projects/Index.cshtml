@@ -13,6 +13,21 @@
         &nbsp;&nbsp;
         <span id="newcat"> <a asp-action="Create">Добавити</a></span>
     </form>
+    <hr />
+    if (/*Model.UserRole == "Admin"*/ true)
+    {
+        <form asp-action="Index" asp-controller="Project">
+            &nbsp;&nbsp;
+
+            <input type="hidden" name="currentPage"  />
+            <input type="text" name="titleOrganizationType" placeholder="Title, Organization, Type" />
+
+            &nbsp; &nbsp;&nbsp;
+            &nbsp; &nbsp;&nbsp;
+            <button type="submit"> Пошук </button>
+        </form>
+    }
+
 
 }
 

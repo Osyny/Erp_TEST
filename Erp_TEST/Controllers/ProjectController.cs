@@ -37,18 +37,18 @@ namespace Erp_TEST.Controllers
             this.environment = environment;
         }
 
-        public ActionResult Index()
+        public ActionResult Index(string titleOrganizationType, int currentPage = 1)
         {
             var roles = this.roleManager.Roles.ToList();
 
             var allUsers = dbContext.ListUsers.Include(u => u.AccountUser).ToList();
             var userName = HttpContext.User.Identity.Name;
             string userRole = "";
-            if (userName != null)
+            if (!string.IsNullOrEmpty(userName))
             {
                 var curentuser = allUsers.FirstOrDefault(u => u.AccountUser.Email == userName);
 
-                var roleUser = getRole();
+                userRole = getRole(curentuser.AccountUser);
             }
 
 
@@ -58,6 +58,20 @@ namespace Erp_TEST.Controllers
                 .Include(p => p.Attachments)
                 .Include(p => p.ProjectType)
                 .ToList();
+
+            if (!string.IsNullOrEmpty(titleOrganizationType))
+            {
+               
+                var foundProj= allProgect.Where(p => p.Title.Contains(titleOrganizationType)
+                                                    || p.Organization != null && p.Organization.Contains(titleOrganizationType)
+                                                    || p.ProjectType.NameType.Contains(titleOrganizationType));
+              
+                if (foundProj.Any())
+                {
+                    allProgect = foundProj.ToList();
+                }
+
+            }
 
             var model = new ProjectsViewModel()
             {
@@ -118,11 +132,15 @@ namespace Erp_TEST.Controllers
             //var addedRoles = roles.Except(roles).ToList();
 
             string userRole = "";
-           // if (userName != null)
+            if (string.IsNullOrEmpty(userName))
             {
                 var curentuser = allUsers.FirstOrDefault(u => u.AccountUser.Email == userName);
 
-                var roleUser = getRole();
+                if(curentuser != null)
+                {
+                    var roleUser = getRole(curentuser.AccountUser);
+                }
+                
 
                 var type = this.dbContext.Types.FirstOrDefault(t => t.Id == model.TypeId);
 
@@ -386,22 +404,21 @@ namespace Erp_TEST.Controllers
         }
 
 
-        private string getRole()
+        private string getRole(AccountUser user)
         {
             var roles = this.roleManager.Roles.ToList();
-            //var role = roles.FirstOrDefault(r => r.Name == roleName);
-            //if (role == null)
-            //    return false;
-            //return true;
-
+         
             string userRole = "";
-            var roleAdmin = roles.FirstOrDefault(r => r.Name == "Admin");
-            var roleUser = roles.FirstOrDefault(r => r.Name == "User");
-            if (roleAdmin != null)
+            //var roleAdmin = roles.FirstOrDefault(r => r.Name == "Admin");
+            //var roleUser = roles.FirstOrDefault(r => r.Name == "User");
+
+            var uRoles = this.userManager.GetRolesAsync(user).Result;
+
+            if (uRoles.Contains("Admin"))
             {
                 userRole = "Admin";
             }
-            else if (roleUser != null)
+            else if (uRoles.Contains("User"))
             {
                 userRole = "User";
             }
@@ -457,7 +474,7 @@ namespace Erp_TEST.Controllers
            
             dbContext.SaveChanges();
 
-            return RedirectToAction(nameof(Index);
+            return RedirectToAction(nameof(Index));
         }
 
     }
