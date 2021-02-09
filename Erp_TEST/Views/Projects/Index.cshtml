@@ -1,0 +1,72 @@
+﻿@model Erp_TEST.Models.ViewModel.Projects.ProjectsViewModel
+
+<div id="container">
+    <h4 style="color:brown;text-align:center;"> <b>&nbsp; &nbsp; Проекти </b></h4>
+
+</div>
+<hr />
+
+
+@if (string.IsNullOrEmpty(Model.UserRole))
+{
+    <form asp-action="CreateSubmit" asp-controller="Project">
+        &nbsp;&nbsp;
+        <span id="newcat"> <a asp-action="Create">Добавити</a></span>
+    </form>
+
+}
+
+<hr />
+
+<div class="cont" id="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Organization</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Role</th>
+                <th>Link</th>
+                <th>Skills</th>
+                <th>Attachments</th>
+                <th>Type</th>
+                <th>Updated</th>
+                <th>Updated</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            @foreach (var proj in Model.ProjectsVm)
+            {
+
+                <tr data-productrowid="@proj.Id">
+                    <td>@proj.Title</td>
+                    <td>@proj.Description</td>
+                    <td> @proj.Organization</td>
+                    <td>@proj.</td>
+                    <td>@proj.</td>
+                    <td>@proj.Role</td>
+                    <td>@proj.Link</td>
+                    <td>@proj.Skills</td>
+                    <td>@proj.Attachments</td>
+                    <td>@proj.ProjectType</td>
+                    <td>@proj.Create</td>
+                    <td>@proj.Update</td>
+                    <td>
+                        <form asp-action="Edit" asp-route-id="@proj.Id" method="post">
+                            <button type="submit">
+                                Редагувати
+                            </button>
+                        </form>
+                    </td>
+
+
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>
+

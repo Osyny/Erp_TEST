@@ -1,0 +1,57 @@
+﻿@model Erp_TEST.Models.ViewModel.Projects.CreateProjectSubmitVm
+
+<div id="container">
+    <h4 id="text"> <b> Добавити новий PROJECT </b></h4>
+</div>
+<hr />
+
+<form asp-action="CreateSubmit" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div id="container">
+        <div class="form-group">
+            <label for="Title"><b>Title</b></label>
+            <input name="Title" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="Description"><b>Description</b></label>
+            <input name="Description" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="Organization"><b>Organization</b></label>
+            <input name="Organization" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="Link"><b>Link</b></label>
+            <input name="Link" class="form-control" />
+        </div>
+
+        <h5> Type :</h5>
+
+        @Html.DropDownList("TypeId", Model.Types);
+      
+
+        
+        <hr />
+        <button type="submit" class="btn btn-primary"><b>Добавити</b></button>
+
+    </div>
+</form>
+
+<style>
+    #text {
+        color: brown
+    }
+
+    #container {
+        background-color: aliceblue;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 25px;
+    }
+</style>
+
+

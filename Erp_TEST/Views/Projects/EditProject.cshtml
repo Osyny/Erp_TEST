@@ -1,0 +1,90 @@
+﻿@model Erp_TEST.Models.ViewModel.Projects.EditProjectVm
+
+<div id="container">
+    <h4 id="text"> <b>  Редагувати PROJECT - @Model. </b></h4>
+</div>
+<hr />
+
+<form asp-action="EditProjectSubmit" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" name="Id" value="@Model.Id" />
+
+    <div id="container">
+        <div class="form-group">
+            <label for="Title"><b>Title</b></label>
+            <input name="Title" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="Description"><b>Description</b></label>
+            <input name="Description" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="Organization"><b>Organization</b></label>
+            <input name="Organization" class="form-control" />
+        </div>
+        <br />
+        <div style="float: left; width: 49%">
+            <label for="Start"><b>Start</b></label>
+            <input type="date" name="Start" value="@Model.Start" />
+        </div>
+        <br />
+        <div style="float: left; width: 49%">
+            <label for="End"><b>End</b></label>
+            <input type="date" name="End" class="form-control" value="@Model.End" />
+        </div>
+        <br />
+        <div>
+            <label for="File"><b>File</b></label>
+            <div id="container">
+                @foreach (var file in Model.AttachmentVm)
+                {
+                    <br />
+                    <label for="File"><b>@file</b></label>
+                    <a href="@Url.Action(  "Edit", "Resume", new { resumeId = Model.Id })">
+                        <b>Delete</b>
+                    </a>
+                    <a href="@Url.Action(  "UploadFile", "Project", new { prId = Model.Id })">
+                        <b>Edit</b>
+                    </a>
+                }
+            </div>
+
+        </div>
+       
+        <br />
+        <div class="form-group">
+            <label for="Organization"><b>Organization</b></label>
+            <input name="Organization" class="form-control" />
+        </div>
+        <br />
+        <div class="form-group">
+            <label for="Link"><b>Link</b></label>
+            <input name="Link" class="form-control" />
+        </div>
+
+        <h5> Type :</h5>
+
+        @Html.DropDownList("TypeId", Model.Types);
+
+
+
+        <hr />
+        <button type="submit" class="btn btn-primary"><b>Добавити</b></button>
+
+    </div>
+</form>
+
+<style>
+    #text {
+        color: brown
+    }
+
+    #container {
+        background-color: aliceblue;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 25px;
+    }
+</style>

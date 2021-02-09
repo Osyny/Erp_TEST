@@ -1,0 +1,41 @@
+﻿@model Erp_TEST.Models.ViewModel.Account.LoginViewModel;
+
+<h2 style="margin-left:100px;">Вхід в систему</h2>
+<hr />
+<form method="post" asp-controller="Account" asp-action="Login"
+      asp-route-returnUrl="@Model.ReturnUrl">
+
+    <div asp-validation-summary="ModelOnly"></div>
+    <div id="container">
+        <div>
+            <label asp-for="Email"></label><br />
+            <input asp-for="Email" value="admin@gmail.com" />
+            <span asp-validation-for="Email"></span>
+        </div>
+        <div>
+            <label asp-for="Password"></label><br />
+            <input asp-for="Password" value="Q1234_qaz" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <hr />
+        <div>
+
+            <label asp-for="RememberMe"> Запам'ятати мене?</label><br />
+            <input asp-for="RememberMe" />
+        </div>
+        <hr />
+        <div>
+            <input type="submit" value="Вхід" />
+        </div>
+    </div>
+
+</form>
+
+<style>
+    #container {
+        background-color: aliceblue;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 25px;
+    }
+</style>

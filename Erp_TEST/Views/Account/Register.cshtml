@@ -1,0 +1,41 @@
+﻿@model Erp_TEST.Models.ViewModel.Account.RegisterViewModel;
+
+<h2 style="margin-left:100px;">Реєстрація нового користувача</h2>
+<hr />
+
+<form method="post" asp-controller="Account" asp-action="Register">
+
+    <div id="container">
+        <div>
+            <label asp-for="Email"></label><br />
+            <input asp-for="Email" />
+        </div>
+        <div>
+            <label asp-for="Password"></label><br />
+            <input asp-for="Password" />
+            <span asp-validation-for="Password"></span>
+        </div>
+        <div>
+            <label asp-for="PasswordConfirm"></label><br />
+            <input asp-for="PasswordConfirm" />
+            <span asp-validation-for="PasswordConfirm"></span>
+        </div>
+
+
+    </div>
+
+    <hr />
+    <div>
+        <button type="submit" value="Зареєструватись">Зареєструватись</button>
+    </div>
+
+</form>
+
+<style>
+    #container {
+        background-color: aliceblue;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 25px;
+    }
+</style>
