@@ -83,7 +83,7 @@ namespace Erp_TEST.Controllers
                     Id = pr.Id,
                     Title = pr.Title,
                     Description = pr.Description,
-                    End = pr.End.HasValue ? pr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
+                    End = ParseDateForProject.GetDateTimeForProgect(pr),// pr.End.HasValue && !pr.End.Value.ToString().Contains("01.01.0001") ? pr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
                     
                     Start = pr.Start.HasValue ? pr.Start.Value.ToString("dd.MM.yyyy") : "",
                     Role = pr.Role,
@@ -120,7 +120,7 @@ namespace Erp_TEST.Controllers
                 Id = updatePr.Id,
                 Title = updatePr.Title,
                 Description = updatePr.Description,
-                End = updatePr.End != null || updatePr.End.HasValue ? updatePr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
+                End = ParseDateForProject.GetDateTimeForProgect(updatePr),// updatePr.End != null || updatePr.End.HasValue ? updatePr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
 
                 Start = updatePr.Start != null || updatePr.Start.HasValue ? updatePr.Start.Value.ToString("dd.MM.yyyy") : "",
                 Role = updatePr.Role,
@@ -168,8 +168,9 @@ namespace Erp_TEST.Controllers
         }
 
 
+        [Route("Project/Post")]
         [HttpPost]
-        public async Task<IActionResult> CreateSubmit(CreateProjectSubmitVm model)
+        public async Task<IActionResult> CreateSubmit(/*[FromBody]*/  CreateProjectSubmitVm model)
         {
             var roles = this.roleManager.Roles.ToList();
 
@@ -365,8 +366,9 @@ namespace Erp_TEST.Controllers
                 Id = updatePr.Id,
                 Title = updatePr.Title,
                 Description = updatePr.Description,
-                End = updatePr.End != null || updatePr.End.HasValue ? updatePr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
-                
+                End = ParseDateForProject.GetDateTimeForProgect(updatePr),//updatePr.End != null || updatePr.End.HasValue ? updatePr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
+
+
                 Start = updatePr.Start != null || updatePr.Start.HasValue ? updatePr.Start.Value.ToString("dd.MM.yyyy") : "",
                 Role = updatePr.Role,
                 Link = string.IsNullOrEmpty(updatePr.Link) ? "" : updatePr.Link,
@@ -420,17 +422,26 @@ namespace Erp_TEST.Controllers
             }
             
             var endRes = DateParsers.ddMMyyyy(model.End);
+            var endtimeRes = DateParsers.HHmm(model.EndTime);
+            DateTime dateEnd = default;
             if (endRes.IsValid)
             {
-                DateTime dateEnd = new DateTime(startRes.Value.Year,
+                dateEnd = new DateTime(startRes.Value.Year,
                   startRes.Value.Month,
-                  startRes.Value.Day);
+                  startRes.Value.Day);            
+
+                
+            }
+
+            if (endtimeRes.IsValid)
+            {
+                dateEnd = dateEnd.AddHours(endtimeRes.Value.Hour);
+                dateEnd = dateEnd.AddMinutes(endtimeRes.Value.Minute);
 
 
-
-                dateEnd = dateEnd.AddHours(endRes.Value.Hour);
-                dateEnd = dateEnd.AddMinutes(endRes.Value.Minute);
-
+            }
+            if (endRes.IsValid || endtimeRes.IsValid)
+            {
                 updatePr.End = dateEnd;
             }
             var type = this.dbContext.Types.FirstOrDefault(t => t.Id == model.TypeId);

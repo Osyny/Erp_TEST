@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Erp_TEST.Models.DbModel;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -376,6 +377,7 @@ namespace Erp_TEST.Helper.DateFormaters
         }
     }
 
+
     public class DoubleParseResult : IInputParseResult
     {
 
@@ -401,6 +403,23 @@ namespace Erp_TEST.Helper.DateFormaters
     }
 
     // 
+    public static class ParseDateForProject
+    {
+        public static string GetDateTimeForProgect(Project pr)
+        {
+            var date = "";
+            if(pr.End.HasValue && !pr.End.Value.ToString().Contains("01.01.0001"))
+            {
+                date = pr.End.Value.ToString("dd.MM.yyyy hh:mm");
+            }
+            else if (pr.End.HasValue && pr.End.Value.ToString().Contains("01.01.0001"))
+            {
+                date = pr.End.Value.ToString("hh:mm");
+            }
+            return date;
+        }
+
+    }
     public static class ParseDateForReport
     {
         public static DateTime GetDate(int year)
