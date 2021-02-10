@@ -13,7 +13,7 @@
         <div class="form-group">
             <label for="Title"><b>Title</b></label>
             <span>@Model.Title</span>
-            <input name="Title" class="form-control"  value="@Model.Title"/>
+            <input name="Title" class="form-control" value="@Model.Title" />
         </div>
         <br />
         <div class="form-group">
@@ -39,7 +39,7 @@
             <input type="time" name="End" />
         </div>
         <br />
-        
+
         <br />
         <div>
             <label for="File"><b>File</b></label>
@@ -120,7 +120,7 @@
         <br />
         <div class="form-group">
             <label for="Link"><b>Link</b></label>
-            <input name="Link" class="form-control"  value="@Model.Link"/>
+            <input name="Link" class="form-control" value="@Model.Link" />
         </div>
 
         <h5> Type :</h5>
@@ -132,7 +132,12 @@
         <hr />
         <button type="submit" class="btn btn-primary"><b>Edit</b></button>
 
+
     </div>
+</form>
+<hr />
+<form asp-action="Index" asp-controller="Project">
+    <button type="submit" class="btn btn-primary"><b>Go to progects</b></button>
 </form>
 
 <style>

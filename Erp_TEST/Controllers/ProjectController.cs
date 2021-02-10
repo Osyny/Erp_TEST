@@ -102,6 +102,54 @@ namespace Erp_TEST.Controllers
             return View("/Views/Projects/Index.cshtml", model);
         }
 
+        public IActionResult AboutProject(Guid Id)
+        {
+
+            var prAll = dbContext.Projects
+                .Include(p => p.Attachments)
+                .Include(p => p.ProjectType)
+                .Include(p => p.Skills)
+                .ToList();
+            var updatePr = prAll.FirstOrDefault(p => p.Id == Id);
+
+            var allTypes = this.dbContext.Types.ToList();
+
+            var model = new AboutProjectVm()
+            {
+
+                Id = updatePr.Id,
+                Title = updatePr.Title,
+                Description = updatePr.Description,
+                End = updatePr.End != null || updatePr.End.HasValue ? updatePr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
+
+                Start = updatePr.Start != null || updatePr.Start.HasValue ? updatePr.Start.Value.ToString("dd.MM.yyyy") : "",
+                Role = updatePr.Role,
+                Link = string.IsNullOrEmpty(updatePr.Link) ? "" : updatePr.Link,
+                // Skills = updatePr.Skills != null || updatePr.Skills.Count != 0 ? string.Join(", ", updatePr.Skills.Select(s => s.Name).ToArray()) : "",
+                AttachmentVm = updatePr.Attachments.Select(f => new AboutFileVm()
+                {
+                    Id = f.Id,
+                    File = f.File,
+                    FileName = f.FileName,
+                    Data = f.DateCreate.ToString("dd.MM.yyyy")
+                }).ToList(),
+                SkillsVm = updatePr.Skills == null ? new List<AboutSkillVm>() : updatePr.Skills.Select(s => new AboutSkillVm()
+                {
+                    Id = s.Id,
+                    SkillName = s.Name,
+                   
+                }).ToList(),
+
+                ProjectType = updatePr.ProjectType.NameType,
+                Create = updatePr.Created.ToString("dd.MM.yyyy"),
+                Update = updatePr.Updated.ToString("dd.MM.yyyy"),
+
+              
+            };
+
+            return View("/Views/Projects/AboutProject.cshtml", model);
+
+        }
         public IActionResult Create()
         {
 

@@ -27,7 +27,7 @@ namespace Api
         {
             services.AddControllers();
 
-            services.AddSwaggerGen();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = " API", Version = "v1" });
@@ -43,7 +43,9 @@ namespace Api
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
+            app.UseSwagger();
+
             app.UseSwagger()
                 .UseSwaggerUI(c =>
               {

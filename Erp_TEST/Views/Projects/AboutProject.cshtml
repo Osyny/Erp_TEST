@@ -1,0 +1,143 @@
+﻿@model Erp_TEST.Models.ViewModel.Projects.AboutProjectVm
+
+<div id="container">
+    <h4 id="text"> <b> Project  - @Model.Title </b></h4>
+</div>
+<hr />
+
+<div >
+    <input type="hidden" name="Id" value="@Model.Id" />
+
+    <div >
+        <div class="form-group" id="container">
+            <label for="Title"><b>Title</b></label>
+            <span >@Model.Title</span>
+           
+        </div>
+        <br />
+        <div class="form-group" id="container">
+            <label for="Description"><b>Description</b></label>
+            <span> @Model.Description</span>
+        </div>
+        <br />
+        <div class="form-group" id="container">
+            <label for="Organization"><b>Organization</b></label>
+            <span> @Model.Organization</span>
+            
+        </div>
+        <br />
+        <div id="container">
+            <label for="Start"><b>Start</b></label>
+            <div for="End"><b>@Model.Start</b></div>
+          
+        </div>
+        <br />
+        <div id="container">
+            <label for="End"><b>End</b></label>
+            <div for="End"><b>@Model.End</b></div>
+           
+            
+        </div>
+        <br />
+
+        <br />
+        <div>
+          
+            <div id="container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+
+                            <th>Data</th>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @foreach (var file in Model.AttachmentVm)
+                        {
+                            <tr data-productrowid="@file.Id">
+                                <td>@file.File</td>
+                                <td>@file.Data  </td>
+
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+
+             
+            </div>
+
+        </div>
+
+        <div>
+         
+            <div id="container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Skill</th>
+
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @foreach (var sk in Model.SkillsVm)
+                        {
+                            <tr data-productrowid="@sk.SkillName">
+                                <td>@sk.SkillName</td>
+
+
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+
+        <br />
+        <div class="form-group" id="container">
+            <label for="Link"><b>Link</b></label>
+            <span> @Model.Link</span>
+        </div>
+
+        <div class="form-group" id="container">
+            <label for="Link"><b>Type</b></label>
+            <span> @Model.ProjectType</span>
+        </div>
+        <div class="form-group" id="container">
+            <label for="Link"><b>Last update</b></label>
+            <span> @Model.Update</span>
+        </div>
+
+
+
+        <hr />
+        <form asp-action="Index" asp-controller="Project">
+            <button type="submit" class="btn btn-primary"><b>Go to progects</b></button>
+        </form>
+
+
+    </div>
+</div>
+<hr />
+
+
+<style>
+    #text {
+        color: brown
+    }
+
+    #container {
+        background-color: aliceblue;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 25px;
+    }
+</style>
+

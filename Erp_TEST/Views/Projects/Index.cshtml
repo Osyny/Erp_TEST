@@ -57,7 +57,7 @@
             {
 
                 <tr data-productrowid="@proj.Id">
-                    <td>@proj.Title</td>
+                    <td><a href="@Url.Action("AboutProject", "Project", new { Id = proj.Id })">@proj.Title</a></td>
                     <td>@proj.Description</td>
                     <td> @proj.Organization</td>
                     <td>@proj.Start</td>
