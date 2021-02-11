@@ -8,6 +8,9 @@ namespace Api.Service
 {
     public interface IApiService
     {
-        Task<bool> IsAddNewProjectAsync(ApiCreateProjectSubmitVm model);
+        Task<string> AddNewProjectAsync(ApiCreateProjectSubmitVm model);
+        Task DeleteFileProjectAsync(string jsonModel);
+
+        Task GetRequestTestAsync();
     }
 }

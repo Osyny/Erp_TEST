@@ -56,13 +56,21 @@
                     <tbody>
                         @foreach (var file in Model.AttachmentVm)
                         {
+                            var model1 = new Erp_TEST.Models.ViewModel.Projects.DeleteFileVm()
+                            {
+                                FileId = file.Id,
+                                PrId = Model.Id
+
+                            };
+                         
                             <tr data-productrowid="@file.Id">
                                 <td>@file.File</td>
                                 <td>
 
-                                    <a href="@Url.Action("DeleteFile", "Project", new { fileId = file.Id, prId = Model.Id })">
+                                    <a href="@Url.Action("DeleteFile", "Project", new {jsonModel= Json.Serialize(model1) })">
                                         <b>Delete</b>
                                     </a>
+         
 
                                 </td>
 

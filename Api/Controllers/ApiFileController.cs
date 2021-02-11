@@ -1,43 +1,38 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Api.Service;
 using Microsoft.AspNetCore.Mvc;
+using Model.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-using Model.Models;
-using Api.Service;
 
 
 namespace Api.Controllers
 {
     [ApiController]
     [Microsoft.AspNetCore.Mvc.Route("[controller]")]
-    public class ProjectApiController : ControllerBase
+    public class ApiFileController : ControllerBase
     {
         private IApiService apiService;
 
-        public ProjectApiController(IApiService apiService)
+        public ApiFileController(IApiService apiService)
         {
             this.apiService = apiService;
-
-          
         }
 
         [HttpGet]
         public ActionResult<string> Get()
-        {          
-            var res = $" value1 + value2";
-            return res;
+        {
+            apiService.GetRequestTestAsync();
+            return "TEST GET";
         }
-
-      
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody] ApiCreateProjectSubmitVm model)
+        public void Post()
         {
-            var res = apiService.AddNewProjectAsync(model).Result;
+            
         }
 
         // PUT api/values/5
@@ -47,9 +42,18 @@ namespace Api.Controllers
         }
 
         // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete]
+        public void DeleteAsync(Guid fileId, Guid prId)
         {
+            var model = new DeleteFileApiVm()
+            {
+                FileId = fileId,
+                PrId = prId
+
+            };
+            var jsonModel = JsonConvert.SerializeObject(model);
+
+              apiService.DeleteFileProjectAsync(jsonModel);
         }
     }
 }

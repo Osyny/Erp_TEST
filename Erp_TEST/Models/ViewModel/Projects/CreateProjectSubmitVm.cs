@@ -24,5 +24,7 @@ namespace Erp_TEST.Models.ViewModel.Projects
         [Display(Name = "Type")]
         public Guid TypeId { get; set; }
         public List<SelectListItem> Types { get; set; }
+
+        public string UserName { get; set; }
     }
 }

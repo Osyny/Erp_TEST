@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 
 namespace Erp_TEST.Models.ViewModel.Projects
 {
-    public class AddFileVm
+    public class DeleteFileVm
     {
-        public Guid Id { get; set; }
-        public string Tytle { get; set; }
+        public Guid FileId { get; set; }
+        public Guid PrId { get; set; }
     }
-
-   
-    
 }

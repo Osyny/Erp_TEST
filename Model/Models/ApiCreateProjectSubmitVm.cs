@@ -21,4 +21,10 @@ namespace Model.Models
         public Guid TypeId { get; set; }
         public List<SelectListItem> Types { get; set; }
     }
+
+    public class DeleteFileApiVm
+    {
+        public Guid FileId { get; set; }
+        public Guid PrId { get; set; }
+    }
 }

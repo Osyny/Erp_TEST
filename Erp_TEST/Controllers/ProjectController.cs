@@ -1,4 +1,5 @@
 ﻿using Erp_TEST.Data;
+using Erp_TEST.Helper;
 using Erp_TEST.Helper.DateFormaters;
 using Erp_TEST.Models;
 using Erp_TEST.Models.DbModel;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,7 +41,9 @@ namespace Erp_TEST.Controllers
 
         public ActionResult Index(string titleOrganizationType, int currentPage = 1)
         {
-            var roles = this.roleManager.Roles.ToList();
+            // var roles = this.roleManager.Roles.ToList();
+
+            var rolesUser = new Roles(this.roleManager, this.userManager);
 
             var allUsers = dbContext.ListUsers.Include(u => u.AccountUser).ToList();
             var userName = HttpContext.User.Identity.Name;
@@ -48,7 +52,7 @@ namespace Erp_TEST.Controllers
             {
                 var curentuser = allUsers.FirstOrDefault(u => u.AccountUser.Email == userName);
 
-                userRole = getRole(curentuser.AccountUser);
+                userRole = rolesUser.GetRole(curentuser.AccountUser);
             }
 
 
@@ -61,11 +65,11 @@ namespace Erp_TEST.Controllers
 
             if (!string.IsNullOrEmpty(titleOrganizationType))
             {
-               
-                var foundProj= allProgect.Where(p => p.Title.Contains(titleOrganizationType)
-                                                    || p.Organization != null && p.Organization.Contains(titleOrganizationType)
-                                                    || p.ProjectType.NameType.Contains(titleOrganizationType));
-              
+
+                var foundProj = allProgect.Where(p => p.Title.Contains(titleOrganizationType)
+                                                     || p.Organization != null && p.Organization.Contains(titleOrganizationType)
+                                                     || p.ProjectType.NameType.Contains(titleOrganizationType));
+
                 if (foundProj.Any())
                 {
                     allProgect = foundProj.ToList();
@@ -84,7 +88,7 @@ namespace Erp_TEST.Controllers
                     Title = pr.Title,
                     Description = pr.Description,
                     End = ParseDateForProject.GetDateTimeForProgect(pr),// pr.End.HasValue && !pr.End.Value.ToString().Contains("01.01.0001") ? pr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
-                    
+
                     Start = pr.Start.HasValue ? pr.Start.Value.ToString("dd.MM.yyyy") : "",
                     Role = pr.Role,
                     Link = string.IsNullOrEmpty(pr.Link) ? "" : pr.Link,
@@ -137,14 +141,14 @@ namespace Erp_TEST.Controllers
                 {
                     Id = s.Id,
                     SkillName = s.Name,
-                   
+
                 }).ToList(),
 
                 ProjectType = updatePr.ProjectType.NameType,
                 Create = updatePr.Created.ToString("dd.MM.yyyy"),
                 Update = updatePr.Updated.ToString("dd.MM.yyyy"),
 
-              
+
             };
 
             return View("/Views/Projects/AboutProject.cshtml", model);
@@ -168,13 +172,14 @@ namespace Erp_TEST.Controllers
         }
 
 
-        [Route("Project/Post")]
+        
         [HttpPost]
-        public async Task<IActionResult> CreateSubmit(/*[FromBody]*/  CreateProjectSubmitVm model)
+        public async Task<IActionResult> CreateSubmit( CreateProjectSubmitVm model)
         {
             var roles = this.roleManager.Roles.ToList();
 
             var userName = HttpContext.User.Identity.Name;
+            var rolesUser = new Roles(this.roleManager, this.userManager);
 
             var allUsers = dbContext.ListUsers.Include(u => u.AccountUser).ToList();
             ////var curentuser = allUsers.FirstOrDefault(u => u.AccountUser.Email == userName);
@@ -185,27 +190,21 @@ namespace Erp_TEST.Controllers
             {
                 var curentuser = allUsers.FirstOrDefault(u => u.AccountUser.Email == userName);
 
-                if(curentuser != null)
+                if (curentuser != null)
                 {
-                    var roleUser = getRole(curentuser.AccountUser);
+                    var roleUser = rolesUser.GetRole(curentuser.AccountUser);
                 }
-                
 
                 var type = this.dbContext.Types.FirstOrDefault(t => t.Id == model.TypeId);
 
-               
+
                 var newProduct = new Project()
                 {
                     Id = Guid.NewGuid(),
                 };
 
-
-
                 if (ModelState.IsValid)
                 {
-
-
-
                     newProduct.Title = model.Title;
 
                     newProduct.Description = model.Description;
@@ -218,8 +217,8 @@ namespace Erp_TEST.Controllers
                     newProduct.Created = DateTime.Now;
                     newProduct.Updated = DateTime.Now;
 
-                
-                 
+
+
                     dbContext.Projects.Add(newProduct);
                     await dbContext.SaveChangesAsync();
 
@@ -228,7 +227,7 @@ namespace Erp_TEST.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "!!!");
+                    ModelState.AddModelError("", "Title, Description, Type - must be filled");
                 }
 
 
@@ -248,7 +247,7 @@ namespace Erp_TEST.Controllers
             {
                 Id = updatePr.Id,
                 Tytle = updatePr.Title
-                
+
             };
 
             return View("/Views/Projects/UploadFile.cshtml", model);
@@ -258,8 +257,8 @@ namespace Erp_TEST.Controllers
         public async Task<IActionResult> UploadFileSubmitAsync(AddFileVm model, IFormFile File)
         {
 
-            var prAll = dbContext.Projects             
-                .Include(p => p.Attachments)         
+            var prAll = dbContext.Projects
+                .Include(p => p.Attachments)
                 .ToList();
             var updatePr = prAll.FirstOrDefault(p => p.Id == model.Id);
 
@@ -292,7 +291,7 @@ namespace Erp_TEST.Controllers
                 await dbContext.SaveChangesAsync();
             }
 
-         
+
 
             return RedirectToAction(nameof(EditProject), new { Id = updatePr.Id });
 
@@ -329,11 +328,11 @@ namespace Erp_TEST.Controllers
             {
                 Id = Guid.NewGuid(),
                 Name = model.Tytle,
-               // ProjectId = updatePr.Id
+                // ProjectId = updatePr.Id
             };
 
 
-            if(updatePr.Skills == null)
+            if (updatePr.Skills == null)
             {
                 updatePr.Skills = new List<Skill>()
                 { };
@@ -348,7 +347,7 @@ namespace Erp_TEST.Controllers
         }
 
 
-            public IActionResult EditProject(Guid Id)
+        public IActionResult EditProject(Guid Id)
         {
 
             var prAll = dbContext.Projects
@@ -372,14 +371,14 @@ namespace Erp_TEST.Controllers
                 Start = updatePr.Start != null || updatePr.Start.HasValue ? updatePr.Start.Value.ToString("dd.MM.yyyy") : "",
                 Role = updatePr.Role,
                 Link = string.IsNullOrEmpty(updatePr.Link) ? "" : updatePr.Link,
-               // Skills = updatePr.Skills != null || updatePr.Skills.Count != 0 ? string.Join(", ", updatePr.Skills.Select(s => s.Name).ToArray()) : "",
+                // Skills = updatePr.Skills != null || updatePr.Skills.Count != 0 ? string.Join(", ", updatePr.Skills.Select(s => s.Name).ToArray()) : "",
                 AttachmentVm = updatePr.Attachments.Select(f => new FileVm()
                 {
                     Id = f.Id,
                     File = f.File,
                     FileName = f.FileName
                 }).ToList(),
-                SkillsVm = updatePr.Skills == null ? new List<SkillVm>()  : updatePr.Skills.Select(s => new SkillVm()
+                SkillsVm = updatePr.Skills == null ? new List<SkillVm>() : updatePr.Skills.Select(s => new SkillVm()
                 {
                     Id = s.Id,
                     SkillName = s.Name
@@ -420,7 +419,7 @@ namespace Erp_TEST.Controllers
 
 
             }
-            
+
             var endRes = DateParsers.ddMMyyyy(model.End);
             var endtimeRes = DateParsers.HHmm(model.EndTime);
             DateTime dateEnd = default;
@@ -428,9 +427,9 @@ namespace Erp_TEST.Controllers
             {
                 dateEnd = new DateTime(startRes.Value.Year,
                   startRes.Value.Month,
-                  startRes.Value.Day);            
+                  startRes.Value.Day);
 
-                
+
             }
 
             if (endtimeRes.IsValid)
@@ -451,8 +450,8 @@ namespace Erp_TEST.Controllers
             updatePr.Organization = model.Organization;
             updatePr.Link = model.Link;
 
-            
-            updatePr.ProjectTypeId =type.Id;
+
+            updatePr.ProjectTypeId = type.Id;
             updatePr.Updated = DateTime.Now;
 
             dbContext.Update(updatePr);
@@ -463,37 +462,22 @@ namespace Erp_TEST.Controllers
         }
 
 
-        private string getRole(AccountUser user)
+     
+
+
+       // [Route("Project/Deleter/Post")]
+        [HttpGet]
+        public IActionResult DeleteFile(string jsonModel/*Guid fileId, Guid prId*/)
         {
-            var roles = this.roleManager.Roles.ToList();
-         
-            string userRole = "";
-            //var roleAdmin = roles.FirstOrDefault(r => r.Name == "Admin");
-            //var roleUser = roles.FirstOrDefault(r => r.Name == "User");
+            var model = JsonConvert.DeserializeObject<DeleteFileVm>(jsonModel);
 
-            var uRoles = this.userManager.GetRolesAsync(user).Result;
-
-            if (uRoles.Contains("Admin"))
-            {
-                userRole = "Admin";
-            }
-            else if (uRoles.Contains("User"))
-            {
-                userRole = "User";
-            }
-            return userRole;
-        }
-
-       
-        public IActionResult DeleteFile(Guid fileId, Guid prId)
-        {
             var prAll = dbContext.Projects
                .Include(p => p.Attachments)
                .ToList();
-            var updatePr = prAll.FirstOrDefault(p => p.Id == prId);
+            var updatePr = prAll.FirstOrDefault(p => p.Id == model.PrId);
 
             var fileAll = dbContext.DbFiles.ToList();
-            var fileFound = fileAll.FirstOrDefault(f => f.Id == fileId);
+            var fileFound = fileAll.FirstOrDefault(f => f.Id == model.FileId);
 
             updatePr.Attachments.Remove(fileFound);
             dbContext.DbFiles.Remove(fileFound);
@@ -501,8 +485,13 @@ namespace Erp_TEST.Controllers
 
             return RedirectToAction(nameof(EditProject), new { Id = updatePr.Id });
         }
-         
-        public IActionResult DeleteSkill(Guid skillId, Guid prId)
+        [HttpGet]
+        public string TestGet()
+        {
+            return "TestGet method return OK!!!!!!!!!!";
+        }
+
+            public IActionResult DeleteSkill(Guid skillId, Guid prId)
         {
             var prAll = dbContext.Projects
                .Include(p => p.Attachments)
