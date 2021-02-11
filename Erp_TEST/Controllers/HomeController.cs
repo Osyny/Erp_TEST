@@ -60,6 +60,9 @@ namespace Erp_TEST.Controllers
                 var res = await this.userManager.CreateAsync(accountUser, "Q1234_qaz");
                 await this.userManager.AddToRoleAsync(accountUser, "Admin");
 
+                //string emailConfirmationToken = await this.userManager.GenerateEmailConfirmationTokenAsync(accountUser);
+                //var confirmResult = await this.userManager.ConfirmEmailAsync(accountUser, emailConfirmationToken);
+
                 if (res.Succeeded)
                 {
                     var newUser = new User()

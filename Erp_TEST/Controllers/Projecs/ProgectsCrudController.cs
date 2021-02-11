@@ -173,5 +173,31 @@ namespace Erp_TEST.Controllers.Projecs
 
             return mes;
         }
+
+        public string DeleteAll(string userRole)
+        {
+            var prAll = dbContext.Projects
+               .Include(p => p.Attachments)
+               .ToList();
+
+            string mess = "";
+
+            foreach (var pr in prAll)
+            {
+                dbContext.Projects.Remove(pr);
+            }
+            try
+            {
+                dbContext.SaveChanges();
+                mess = "Всі проекти видалено успішно";
+            }
+            catch (Exception ex)
+            {
+                mess = ex.Message;
+                return mess;
+            }            
+
+            return mess;
+        }
     }
 }

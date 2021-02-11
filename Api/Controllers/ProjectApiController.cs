@@ -54,8 +54,11 @@ namespace Api.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string userRole)
         {
+            var res = apiService.EditProjectAsync(model).Result;
+
+            return res;
         }
     }
 }

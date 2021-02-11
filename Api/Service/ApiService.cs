@@ -62,25 +62,7 @@ namespace Api.Service
             return mes;
         }
 
-        public async Task GetRequestTestAsync()
-        {
-            string uri = this.config.AddNewProject + "/Deleter/Post";
-            HttpResponseMessage response = null;
-            var err = "";
-            try
-            {
-                // --> Api -> Project-> [HttpPost]Post
-                // "https://localhost:5001/Project"
-                response = await httpClient.GetAsync(uri);
-                var i = response;
 
-            }
-            catch (Exception ex)
-            {
-                err = ex.Message;
-                // return Ok(new ResultStatusHelper(false) { Message = $"Service unavailable {ex.Message}" });
-            }
-        }
 
         //Put
         public async Task<string> EditProjectAsync(ApiEditProjectVm model)
@@ -107,9 +89,33 @@ namespace Api.Service
 
             }
             return mes;
+        }  
+        //DeleteAll
+        public async Task<string> DeleteAllProjectsAsync(string userName)
+        {
+            string uri = this.config.AddNewProject + "/DeleteAll";
+
+           uri += $"userName={userName}&";
+
+            HttpResponseMessage response = null;
+            var mes = "";
+            try
+            {
+                // --> Api -> ProgectsCrudController-> [HttpDelete]DeleteAll
+                // "https://localhost:5001/Project"
+                var response1 = await httpClient.DeleteAsync(uri);
+                mes = response.ToString();
+
+            }
+            catch (Exception ex)
+            {
+                mes = ex.Message;
+
+            }
+            return mes;
         }
 
-        // ProjectFile
+        // ProjectFile delete
         public async Task DeleteFileProjectAsync(string jsonModel)
         {
             string uri = this.config.AddNewProject + "/Deleter/Post?";
@@ -135,6 +141,27 @@ namespace Api.Service
             }
         }
 
-        
+
+
+
+        //public async Task GetRequestTestAsync()
+        //{
+        //    string uri = this.config.AddNewProject + "/Deleter/Post";
+        //    HttpResponseMessage response = null;
+        //    var err = "";
+        //    try
+        //    {
+        //        // --> Api -> Project-> [HttpPost]Post
+        //        // "https://localhost:5001/Project"
+        //        response = await httpClient.GetAsync(uri);
+        //        var i = response;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        err = ex.Message;
+        //        // return Ok(new ResultStatusHelper(false) { Message = $"Service unavailable {ex.Message}" });
+        //    }
+        //}
     }
 }
