@@ -10,7 +10,7 @@ namespace Api.Service
     {
         Task<string> AddNewProjectAsync(ApiProjectSubmitVm model);
         Task<string> EditProjectAsync(ApiProjectSubmitVm model);
-        Task<string> EditProjectAsync(ApiProjectSubmitVm model);
+        Task<string> DeleteAllProjectsAsync(string userName);
 
         Task DeleteFileProjectAsync(string jsonModel);
 
