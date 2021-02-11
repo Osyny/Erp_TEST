@@ -9,7 +9,7 @@
 
 @if (!string.IsNullOrEmpty(Model.UserRole))
 {
-    <form asp-action="Create" asp-controller="Project">
+    <form method="get" asp-action="Create" asp-controller="Project">
         &nbsp;&nbsp;
         <button type="submit" style="background-color:lightcyan">Добавити</button>
     </form>

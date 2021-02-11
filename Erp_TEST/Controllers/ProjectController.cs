@@ -175,6 +175,8 @@ namespace Erp_TEST.Controllers
             return View("/Views/Projects/AboutProject.cshtml", model);
 
         }
+
+        [HttpGet]
         public IActionResult Create()
         {
 
@@ -195,7 +197,7 @@ namespace Erp_TEST.Controllers
 
         
         [HttpPost]
-        public async Task<IActionResult> CreateSubmit( CreateProjectSubmitVm model)
+        public async Task<IActionResult> Create( CreateProjectSubmitVm model)
         {
             var roles = this.roleManager.Roles.ToList();
 
@@ -206,6 +208,7 @@ namespace Erp_TEST.Controllers
             var curentuser = allUsers.FirstOrDefault(u => u.AccountUser.Email == userName);
             //var addedRoles = roles.Except(roles).ToList();
 
+            
             string userRole = "";
             if (!string.IsNullOrEmpty(userName))
             {
@@ -244,16 +247,24 @@ namespace Erp_TEST.Controllers
                     await dbContext.SaveChangesAsync();
 
 
-                    return RedirectToAction(nameof(UploadFile), new { prId = newProduct.Id });
+                    //return RedirectToAction(nameof(UploadFile), new { prId = newProduct.Id });
+                    return RedirectToAction(nameof(EditProject), new { Id = newProduct.Id });
                 }
                 else
                 {
+                    var allTypes = this.dbContext.Types.ToList();
+                    model.Types = allTypes.Select(t => new SelectListItem
+                    {
+                        Value = t.Id.ToString(),
+                        Text = t.NameType
+
+                    }).ToList();
                     ModelState.AddModelError("", "Title, Description, Type - must be filled");
                 }
 
 
             }
-            return RedirectToAction(nameof(Index));
+            return View("/Views/Projects/Create.cshtml", model);
         }
         public IActionResult UploadFile(Guid prId)
         {
