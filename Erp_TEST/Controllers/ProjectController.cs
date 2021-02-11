@@ -182,13 +182,13 @@ namespace Erp_TEST.Controllers
             var rolesUser = new Roles(this.roleManager, this.userManager);
 
             var allUsers = dbContext.ListUsers.Include(u => u.AccountUser).ToList();
-            ////var curentuser = allUsers.FirstOrDefault(u => u.AccountUser.Email == userName);
+            var curentuser = allUsers.FirstOrDefault(u => u.AccountUser.Email == userName);
             //var addedRoles = roles.Except(roles).ToList();
 
             string userRole = "";
             if (string.IsNullOrEmpty(userName))
             {
-                var curentuser = allUsers.FirstOrDefault(u => u.AccountUser.Email == userName);
+              
 
                 if (curentuser != null)
                 {

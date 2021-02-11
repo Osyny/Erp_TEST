@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using Model.Models;
 using Api.Service;
-
+using System.Net;
 
 namespace Api.Controllers
 {
@@ -21,7 +21,10 @@ namespace Api.Controllers
         {
             this.apiService = apiService;
 
-          
+            ServicePointManager.ServerCertificateValidationCallback = delegate
+            {
+                return true;
+            };
         }
 
         [HttpGet]
@@ -32,18 +35,21 @@ namespace Api.Controllers
         }
 
       
-
-        // POST api/values
         [HttpPost]
-        public void Post([FromBody] ApiCreateProjectSubmitVm model)
+        public string Post([FromBody] ApiProjectSubmitVm model)
         {
             var res = apiService.AddNewProjectAsync(model).Result;
+            return res;
         }
 
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+       
+        [HttpPut()]
+        public string Put([FromBody] ApiProjectSubmitVm model)
         {
+            var res = apiService.EditProjectAsync(model).Result;
+
+            return res;
+
         }
 
         // DELETE api/values/5
