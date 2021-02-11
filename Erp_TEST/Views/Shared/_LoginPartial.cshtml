@@ -7,15 +7,7 @@
 @inject UserManager<AccountUser> UserManager
 
 <ul class="navbar-nav">
-    @{ 
-        var user = User.Identity;
-        if (user.IsAuthenticated)
-        {
-            bool isUs = true;
-
-        }
-
-    }
+   
     @if (SignInManager.IsSignedIn(User))
     {
         @*@{

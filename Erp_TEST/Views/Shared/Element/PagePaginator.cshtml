@@ -1,0 +1,109 @@
+﻿@using Erp_TEST.Models.ViewModel.Paginations
+@model Erp_TEST.Models.ViewModel.Paginations.PaginationViewModel
+
+
+@{
+    var prevPageNumber = Model.CurrentPage - 1;
+    var prevMorePageNumber = Model.CurrentPage - Model.DisplayOnPage;
+
+    var nextPageNumber = Model.CurrentPage + 1;
+    var nextMorePageNumber = Model.CurrentPage + Model.DisplayOnPage;
+
+}
+<link href="@Url.Content("~/css/pagination.css")" rel="stylesheet" type="text/css">
+
+@functions
+{
+
+    public string makeItem(string content, string classNameStr, string href)
+    {
+        return $"<div class='{classNameStr}'> <a href='{href}'>{content}</a> </div>";
+    }
+
+    public string makeLinkByPageNumber(int pageNumber)
+    {
+        var parameter = new Dictionary<string, string>() { };
+
+        foreach (var keyValuePair in Model.ObjectParameter)
+        {
+            parameter.Add(keyValuePair.Key, keyValuePair.Value);
+        }
+        parameter.Add("currentPage", pageNumber.ToString());
+
+        return Url.Action(Model.ActionName, Model.ControllerName, parameter);
+
+        //return Url.Action(Model.ActionName, Model.ControllerName, Model.ObjectParameter);
+    }
+
+}
+<div class="paginationWrapper">
+
+    <div class="prevButtons">
+
+
+        @if (Model.TotalCount != 0 && Model.TotalCount != 1)
+        {
+            @Html.Raw(makeItem("◄◄", "paginationItem prevMore", makeLinkByPageNumber(prevMorePageNumber)))
+
+            @Html.Raw(makeItem("◄", "paginationItem prev", makeLinkByPageNumber(prevPageNumber)))
+        }
+
+    </div>
+
+
+    <nav class="pagination">
+
+
+        @if (Model.CurrentPage - 2 >= 0)
+        {
+            @Html.Raw(makeItem((Model.CurrentPage - 2).ToString(), "paginationItem", makeLinkByPageNumber(Model.CurrentPage - 2)))
+        }
+        @if (Model.CurrentPage - 1 > 0)
+        {
+            @Html.Raw(makeItem((Model.CurrentPage - 1).ToString(), "paginationItem", makeLinkByPageNumber(Model.CurrentPage - 1)))
+        }
+
+
+        @Html.Raw(makeItem((Model.CurrentPage).ToString(), "paginationItem active", makeLinkByPageNumber(Model.CurrentPage)))
+
+
+
+        @if (Model.CurrentPage + 1 <= Model.TotalCount)
+        {
+            @Html.Raw(makeItem((Model.CurrentPage + 1).ToString(), "paginationItem", makeLinkByPageNumber(Model.CurrentPage + 1)))
+        }
+
+
+        @if (Model.CurrentPage + 2 <= Model.TotalCount)
+        {
+            @Html.Raw(makeItem((Model.CurrentPage + 2).ToString(), "paginationItem", makeLinkByPageNumber(Model.CurrentPage + 2)))
+        }
+
+
+        @if (Model.CurrentPage + 2 < Model.TotalCount)
+        {
+            @Html.Raw(makeItem("...", "paginationItem hiddenPagesPlacholder disabled", makeLinkByPageNumber(Model.CurrentPage)))
+
+            @*@Html.Raw(makeItem((Model.TotalCount / Model.DisplayOnPage).ToString(), "paginationItem", makeLinkByPageNumber(Model.TotalCount)))*@
+            @Html.Raw(makeItem((Model.TotalCount).ToString(), "paginationItem", makeLinkByPageNumber(Model.TotalCount)))
+        }
+
+
+    </nav>
+
+
+    <div class="nextButtons">
+
+
+        @if (Model.TotalCount != 0 && Model.TotalCount != 1)
+        {
+            @Html.Raw(makeItem("►", "paginationItem next", makeLinkByPageNumber(nextPageNumber)))
+
+            @Html.Raw(makeItem("►►", "paginationItem nextMore", makeLinkByPageNumber(nextMorePageNumber)))
+        }
+
+    </div>
+
+</div>
+
+

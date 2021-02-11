@@ -1,32 +1,38 @@
 ﻿@model Erp_TEST.Models.ViewModel.Projects.ProjectsViewModel
 
-<div id="container">
+@*<div id="container">
     <h4 style="color:brown;text-align:center;"> <b>&nbsp; &nbsp; Проекти </b></h4>
 
 </div>
-<hr />
+<hr />*@
 
 
 @if (!string.IsNullOrEmpty(Model.UserRole))
 {
-    <form asp-action="CreateSubmit" asp-controller="Project">
+    <form asp-action="Create" asp-controller="Project">
         &nbsp;&nbsp;
-        <span id="newcat"> <a asp-action="Create">Добавити</a></span>
+        <button type="submit" style="background-color:lightcyan">Добавити</button>
     </form>
 
     if (Model.UserRole == "Admin")
     {
         <br />
         <hr />
-        <form asp-action="Index" asp-controller="Project">
+        <form asp-action="Index" asp-controller="Project" style="float:left; margin-bottom:2rem;">
             &nbsp;&nbsp;
 
-            <input type="hidden" name="currentPage"  />
+            <input type="hidden" name="currentPage" />
             <input type="text" name="titleOrganizationType" placeholder="Title, Organization, Type" />
-
-            &nbsp; &nbsp;&nbsp;
-            &nbsp; &nbsp;&nbsp;
+            &nbsp; &nbsp;&nbsp;          
             <button type="submit"> Пошук </button>
+        </form>
+     
+        <form asp-action="DeleteAll" asp-controller="Project" style="float:left; margin-bottom:2rem;">
+            &nbsp;&nbsp;
+            &nbsp; &nbsp;&nbsp;
+            <button type="submit" style="background-color:tomato">
+                Delete all
+            </button>
         </form>
     }
 
@@ -35,7 +41,7 @@
 
 <br />
 
-<div class="cont" id="container">
+<div class="cont">
     <table class="table">
         <thead>
             <tr>
@@ -88,14 +94,31 @@
             }
         </tbody>
     </table>
-    @if (!string.IsNullOrEmpty(Model.UserRole) && Model.UserRole == "Admin")
-    {
-        <form asp-action="DeleteAll" asp-controller="Project">
-            <button type="submit">
-                Delete all
-            </button>
-        </form>
-    }
+
+    @Html.PartialAsync("~/Views/Shared/Element/PagePaginator.cshtml", Model.Pagination).Result
+
+    @*@if (!string.IsNullOrEmpty(Model.UserRole) && Model.UserRole == "Admin")
+        {
+            <div id="container">
+                <form asp-action="DeleteAll" asp-controller="Project">
+                    <button type="submit">
+                        Delete all
+                    </button>
+                </form>
+            </div>
+        }*@
 
 </div>
+
+<style>
+
+
+    #container {
+        background-color: aliceblue;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 25px;
+    }
+</style>
+
 

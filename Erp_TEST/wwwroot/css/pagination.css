@@ -1,0 +1,116 @@
+﻿.paginationWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 85px;
+    padding-bottom: 85px;
+}
+
+.prevButtons {
+    display: flex;
+    align-items: center;
+}
+
+.nextButtons {
+    display: flex;
+    align-items: center;
+}
+
+.prev {
+    padding-right: 2px;
+}
+
+.prevMore {
+    padding-right: 3px;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+}
+
+.paginationItem {
+    margin-left: 15px;
+    margin-right: 15px;
+    &:hover
+
+{
+    a
+
+{
+    text-decoration: underline;
+}
+
+}
+}
+margin-left: 70px; margin-right: 70px;
+}
+
+.paginationItem {
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    // margin-left: 15px;
+    // margin-right: 15px;
+    // font-size: 26px;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 55px;
+    &.disabled
+
+{
+    a
+
+{
+    pointer-events: none;
+    color: rgba(0,0,0, .2);
+}
+
+}
+
+a {
+    display: block;
+    height: 100%;
+    color: $headings_color;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+&:not(.active):hover {
+    background-color: $mainPage_color_circle_shadow;
+}
+
+}
+
+.active {
+    background-color: $primary_color;
+    a
+
+{
+    color: #fff;
+}
+
+}
+
+.hiddenPagesPlacholder {
+}
+
+.hiddenNumbers {
+}
+
+.next {
+    padding-left: 2px;
+}
+
+.nextMore {
+    padding-left: 3px;
+}
+
+}
+
+
+._1________2___________3___________4________5____ {
+    /*  // font-family: "Proxima Nova";
+        // color: rgb(73, 73, 73);
+        // line-height: 1.154;*/
+}

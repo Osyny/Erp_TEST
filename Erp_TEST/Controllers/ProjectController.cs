@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Erp_TEST.Models.ViewModel.Paginations;
 
 namespace Erp_TEST.Controllers
 {
@@ -57,29 +58,47 @@ namespace Erp_TEST.Controllers
 
 
             //  var skills = 
-            var allProgect = dbContext.Projects
+            IQueryable<Project> allProgect = dbContext.Projects
                 .Include(p => p.Skills)
                 .Include(p => p.Attachments)
-                .Include(p => p.ProjectType)
-                .ToList();
+                .Include(p => p.ProjectType);
 
             if (!string.IsNullOrEmpty(titleOrganizationType))
             {
+                
 
                 var foundProj = allProgect.Where(p => p.Title.Contains(titleOrganizationType)
-                                                     || p.Organization != null && p.Organization.Contains(titleOrganizationType)
+                                                     || (p.Organization != null && p.Organization.Contains(titleOrganizationType) 
+                                                         || p.Organization.ToLower().Contains(titleOrganizationType))
                                                      || p.ProjectType.NameType.Contains(titleOrganizationType));
 
                 if (foundProj.Any())
                 {
-                    allProgect = foundProj.ToList();
+                    allProgect = foundProj;
                 }
 
             }
 
+            var count = allProgect.Count();
+            int pageSize = 6;
+
+            allProgect = allProgect.Skip(pageSize * currentPage - pageSize).Take(pageSize);
+
             var model = new ProjectsViewModel()
             {
                 UserRole = userRole,
+                
+                Pagination = new PaginationViewModel()
+                {
+                    TotalCount = count,
+                    CurrentPage = currentPage,
+                    ControllerName = "Project",
+                    ActionName = "Index",
+                    ObjectParameter = new Dictionary<string, string> {
+                    {
+                           "", ""
+                    }}
+                },
 
                 ProjectsVm = allProgect.Select(pr => new ProjectViewModel()
                 {
@@ -87,6 +106,7 @@ namespace Erp_TEST.Controllers
                     Id = pr.Id,
                     Title = pr.Title,
                     Description = pr.Description,
+                    Organization = pr.Organization,
                     End = ParseDateForProject.GetDateTimeForProgect(pr),// pr.End.HasValue && !pr.End.Value.ToString().Contains("01.01.0001") ? pr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
 
                     Start = pr.Start.HasValue ? pr.Start.Value.ToString("dd.MM.yyyy") : "",
@@ -124,6 +144,7 @@ namespace Erp_TEST.Controllers
                 Id = updatePr.Id,
                 Title = updatePr.Title,
                 Description = updatePr.Description,
+                Organization = updatePr.Organization,
                 End = ParseDateForProject.GetDateTimeForProgect(updatePr),// updatePr.End != null || updatePr.End.HasValue ? updatePr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
 
                 Start = updatePr.Start != null || updatePr.Start.HasValue ? updatePr.Start.Value.ToString("dd.MM.yyyy") : "",
@@ -186,13 +207,13 @@ namespace Erp_TEST.Controllers
             //var addedRoles = roles.Except(roles).ToList();
 
             string userRole = "";
-            if (string.IsNullOrEmpty(userName))
+            if (!string.IsNullOrEmpty(userName))
             {
               
 
                 if (curentuser != null)
                 {
-                    var roleUser = rolesUser.GetRole(curentuser.AccountUser);
+                    userRole = rolesUser.GetRole(curentuser.AccountUser);
                 }
 
                 var type = this.dbContext.Types.FirstOrDefault(t => t.Id == model.TypeId);
@@ -365,7 +386,8 @@ namespace Erp_TEST.Controllers
                 Id = updatePr.Id,
                 Title = updatePr.Title,
                 Description = updatePr.Description,
-                End = ParseDateForProject.GetDateTimeForProgect(updatePr),//updatePr.End != null || updatePr.End.HasValue ? updatePr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
+                Organization = updatePr.Organization,
+                End = ParseDateForProject.GetDateTimeForProgect(updatePr),
 
 
                 Start = updatePr.Start != null || updatePr.Start.HasValue ? updatePr.Start.Value.ToString("dd.MM.yyyy") : "",

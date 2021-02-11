@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Erp_TEST.Models.ViewModel.Paginations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +11,8 @@ namespace Erp_TEST.Models.ViewModel.Projects
         public List<ProjectViewModel> ProjectsVm{ get; set; }
         public string UserRole{ get; set; }
         public string TitleOrganizationType{ get; set; }
-      //  public string Curent{ get; set; }
+
+        public PaginationViewModel Pagination { get; set; }
     }
 
 
