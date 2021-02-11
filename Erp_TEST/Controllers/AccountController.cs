@@ -48,15 +48,23 @@ namespace Erp_TEST.Controllers
                  
                     await this.userManager.AddToRoleAsync(accountUser, "User");
 
-                    var newUser = new User()
-                    {
-                        Id = Guid.NewGuid(),
-                        AccountUser = accountUser,
-                        DateRegister = DateTime.Now
+                    string emailConfirmationToken = await this.userManager.GenerateEmailConfirmationTokenAsync(accountUser);
 
-                    };
-                    dbContext.ListUsers.Add(newUser);
-                    await dbContext.SaveChangesAsync();
+                    var confirmResult = await this.userManager.ConfirmEmailAsync(accountUser, emailConfirmationToken);
+
+                    if(confirmResult.Succeeded)
+                    {
+                        var newUser = new User()
+                        {
+                            Id = Guid.NewGuid(),
+                            AccountUser = accountUser,
+                            DateRegister = DateTime.Now
+
+                        };
+                        dbContext.ListUsers.Add(newUser);
+                        await dbContext.SaveChangesAsync();
+                    }
+                   
 
                     return RedirectToAction("Index", "Home");
                 }

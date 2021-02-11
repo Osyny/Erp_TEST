@@ -9,13 +9,13 @@
     <div id="container">
         <div>
             <label asp-for="Email"></label><br />
-            <input asp-for="Email"/>
+            <input asp-for="Email" value="admin@gmail.com"/>
             <span asp-validation-for="Email"></span>
         </div>
         <div>
-            <label asp-for="Password"></label><br />
+            <label asp-for="Password">Пароль: <b>"Q1234_qaz"</b></label><br />
             <input asp-for="Password"/>
-            <span asp-validation-for="Password"></span>
+            <span asp-validation-for="Password" ></span>
         </div>
         <hr />
         <div>

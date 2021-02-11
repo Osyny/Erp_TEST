@@ -7,15 +7,17 @@
 <hr />
 
 
-@if (string.IsNullOrEmpty(Model.UserRole))
+@if (!string.IsNullOrEmpty(Model.UserRole))
 {
     <form asp-action="CreateSubmit" asp-controller="Project">
         &nbsp;&nbsp;
         <span id="newcat"> <a asp-action="Create">Добавити</a></span>
     </form>
-    <hr />
-    if (/*Model.UserRole == "Admin"*/ true)
+
+    if (Model.UserRole == "Admin")
     {
+        <br />
+        <hr />
         <form asp-action="Index" asp-controller="Project">
             &nbsp;&nbsp;
 
@@ -31,7 +33,7 @@
 
 }
 
-<hr />
+<br />
 
 <div class="cont" id="container">
     <table class="table">
@@ -70,7 +72,7 @@
                     <td>@proj.Create</td>
                     <td>@proj.Update</td>
                     <td>
-                        @if (string.IsNullOrEmpty(Model.UserRole))
+                        @if (!string.IsNullOrEmpty(Model.UserRole))
                         {
                             <form asp-action="EditProject" asp-controller="Project" asp-route-id="@proj.Id">
                                 <button type="submit">
@@ -86,7 +88,7 @@
             }
         </tbody>
     </table>
-    @if (string.IsNullOrEmpty(Model.UserRole) && Model.UserRole == "Admin")
+    @if (!string.IsNullOrEmpty(Model.UserRole) && Model.UserRole == "Admin")
     {
         <form asp-action="DeleteAll" asp-controller="Project">
             <button type="submit">

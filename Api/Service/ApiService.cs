@@ -141,27 +141,34 @@ namespace Api.Service
             }
         }
 
+        public Task<string> EditProjectAsync(ApiProjectSubmitVm model)
+        {
+            throw new NotImplementedException();
+        }
+
+      
 
 
 
-        //public async Task GetRequestTestAsync()
-        //{
-        //    string uri = this.config.AddNewProject + "/Deleter/Post";
-        //    HttpResponseMessage response = null;
-        //    var err = "";
-        //    try
-        //    {
-        //        // --> Api -> Project-> [HttpPost]Post
-        //        // "https://localhost:5001/Project"
-        //        response = await httpClient.GetAsync(uri);
-        //        var i = response;
+        // Test
+        public async Task GetRequestTestAsync()
+        {
+            string uri = this.config.AddNewProject + "/Deleter/Post";
+            HttpResponseMessage response = null;
+            var err = "";
+            try
+            {
+                // --> Api -> Project-> [HttpPost]Post
+                // "https://localhost:5001/Project"
+                response = await httpClient.GetAsync(uri);
+                var i = response;
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        err = ex.Message;
-        //        // return Ok(new ResultStatusHelper(false) { Message = $"Service unavailable {ex.Message}" });
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                err = ex.Message;
+                // return Ok(new ResultStatusHelper(false) { Message = $"Service unavailable {ex.Message}" });
+            }
+        }
     }
 }
