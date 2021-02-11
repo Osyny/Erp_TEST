@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Model.Models;
 using Api.Service;
 using System.Net;
+using ViewModelService.Models;
 
 namespace Api.Controllers
 {
@@ -28,9 +29,9 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<string> Get()
-        {          
-            var res = $" value1 + value2";
+        public List<ApiGetProjectsVm> Get()
+        {
+            var res = apiService.GetProjects().Result;
             return res;
         }
 
@@ -44,7 +45,7 @@ namespace Api.Controllers
 
        
         [HttpPut()]
-        public string Put([FromBody] ApiProjectSubmitVm model)
+        public string Put([FromBody] ApiEditProjectVm model)
         {
             var res = apiService.EditProjectAsync(model).Result;
 

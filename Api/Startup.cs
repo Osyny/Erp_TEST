@@ -44,7 +44,17 @@ namespace Api
 
             services.AddHttpClient<IApiService, ApiService>()
               .AddPolicyHandler(GetRetryPolicy())
-              .SetHandlerLifetime(TimeSpan.FromMinutes(10));
+              .SetHandlerLifetime(TimeSpan.FromMinutes(10))
+              .ConfigurePrimaryHttpMessageHandler(sp =>
+              {
+                  var handler = new HttpClientHandler();
+                  handler.ServerCertificateCustomValidationCallback +=
+                                        (sender, certificate, chain, errors) =>
+                                        {
+                                            return true;
+                                        };
+                  return handler;
+              });
 
 
             services.AddSwaggerGen(c =>

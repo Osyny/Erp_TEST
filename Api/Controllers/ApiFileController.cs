@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using ViewModelService.Models;
 
 namespace Api.Controllers
 {
@@ -22,38 +22,35 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public ActionResult<string> Get()
+        public ActionResult<List<ApiDbFileVm>> Get(Guid prId)
         {
-            apiService.GetRequestTestAsync();
-            return "TEST GET";
+            var res = apiService.GetFiles(prId).Result;
+            return res;
         }
 
         // POST api/values
         [HttpPost]
-        public void Post()
+        public string Post(AddFileApiVm model)
         {
-            
+            var res = apiService.AddFileAsync(model).Result;
+            return res;
         }
 
         // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public void Put([FromBody] EditFileApiVm model)
         {
+            //var res = apiService.EditProjectAsync(model).Result;
+            //return res;
         }
 
         // DELETE api/values/5
         [HttpDelete]
-        public void DeleteAsync(Guid fileId, Guid prId)
+        public string Delete(Guid fileId, Guid prId)
         {
-            var model = new DeleteFileApiVm()
-            {
-                FileId = fileId,
-                PrId = prId
 
-            };
-            var jsonModel = JsonConvert.SerializeObject(model);
-
-              apiService.DeleteFileProjectAsync(jsonModel);
+            var mes = apiService.DeleteFileProjectAsync(fileId, prId).Result;
+            return mes;
         }
     }
 }

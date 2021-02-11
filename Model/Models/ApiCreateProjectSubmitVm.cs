@@ -47,21 +47,29 @@ namespace Model.Models
         public string Role { get; set; }
         public string Link { get; set; }
 
-      //  public string Skills { get; set; }
+        //  public string Skills { get; set; }
 
 
         //public List<FileVm> AttachmentVm { get; set; }
         //public List<SkillVm> SkillsVm { get; set; }
 
-      //  public string Create { get; set; }
+        //  public string Create { get; set; }
         //public string Update { get; set; }
 
         public string User { get; set; }
 
 
-      //  public string ProjectType { get; set; }
-      //  public string ProjectType { get; set; }
+        //  public string ProjectType { get; set; }
+        //  public string ProjectType { get; set; }
         public Guid? TypeId { get; set; }
-      //  public List<SelectListItem> Types { get; set; }
+        //  public List<SelectListItem> Types { get; set; }
+    }
+
+
+    public class EditFileApiVm
+    {
+        public Guid FileId { get; set; }
+        public string NameFile { get; set; }
+       
     }
 }

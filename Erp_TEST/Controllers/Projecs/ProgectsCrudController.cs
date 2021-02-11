@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using ViewModelService.Models;
 
 namespace Erp_TEST.Controllers.Projecs
 {
@@ -34,6 +34,38 @@ namespace Erp_TEST.Controllers.Projecs
             this.userManager = userManager;
         }
 
+        [Route("ProgectsCrud/Get")]
+        [HttpGet]
+        public async Task<List<ApiGetProjectsVm>> GetProjects()
+        {
+            IQueryable<Project> allProgect = dbContext.Projects
+               .Include(p => p.Skills)
+               .Include(p => p.Attachments)
+               .Include(p => p.ProjectType);
+
+            var modelVm = allProgect.Select(pr => new ApiGetProjectsVm()
+            {
+
+                Id = pr.Id,
+                Title = pr.Title,
+                Description = pr.Description,
+                Organization = pr.Organization,
+                End = ParseDateForProject.GetDateTimeForProgect(pr),// pr.End.HasValue && !pr.End.Value.ToString().Contains("01.01.0001") ? pr.End.Value.ToString("dd.MM.yyyy hh:mm") : "",
+
+                Start = pr.Start.HasValue ? pr.Start.Value.ToString("dd.MM.yyyy") : "",
+                Role = pr.Role,
+                Link = string.IsNullOrEmpty(pr.Link) ? "" : pr.Link,
+                Skills = pr.Skills.Count != 0 ? string.Join(", ", pr.Skills.Select(s => s.Name).ToArray()) : "",
+                Attachments = pr.Attachments.Count != 0 ? string.Join(", ", pr.Attachments.Select(s => s.File).ToArray()) : "",
+                ProjectType = pr.ProjectType.NameType,
+                Create = pr.Created.ToString("dd.MM.yyyy"),
+                Update = pr.Updated.ToString("dd.MM.yyyy")
+
+            }).ToList();
+
+            return modelVm;
+        }
+        [Route("ProgectsCrud/Post")]
         [HttpPost]
         public async Task<string> CreateSubmit([FromBody] CreateProjectSubmitVm model)
         {
@@ -46,17 +78,14 @@ namespace Erp_TEST.Controllers.Projecs
             //var addedRoles = roles.Except(roles).ToList();
 
             string userRole = "";
-            if (string.IsNullOrEmpty(model.UserName))
+            if (!string.IsNullOrEmpty(model.UserName))
             {
                 var curentuser = allUsers.FirstOrDefault(u => u.AccountUser.Email == model.UserName);
 
                 if (curentuser != null)
-                {                  
-
-                    var roleUser = rolesUser.GetRole(curentuser.AccountUser);
-                }
-
-               
+                {
+                    userRole = rolesUser.GetRole(curentuser.AccountUser);
+                }              
 
                 var newProduct = new Project()
                 {
@@ -97,7 +126,8 @@ namespace Erp_TEST.Controllers.Projecs
             return "UserName - must be filled";
 
         }
-        public string EditProject(ApiEditProjectVm model)
+        // Put
+        public string EditProject([FromBody]ApiEditProjectVm model)
         {
             var mes = "";
             var prAll = dbContext.Projects
@@ -116,11 +146,7 @@ namespace Erp_TEST.Controllers.Projecs
 
 
             }
-            else if(!string.IsNullOrEmpty(model.Start))
-            {
-                mes = "Поле 'Start date' не вірний формат";
-                return mes;
-            }
+            
 
             var endRes = DateParsers.ddMMyyyy(model.End);
             var endtimeRes = DateParsers.HHmm(model.EndTime);
@@ -131,38 +157,27 @@ namespace Erp_TEST.Controllers.Projecs
                   startRes.Value.Month,
                   startRes.Value.Day);
 
-
-            }
-            else if (!string.IsNullOrEmpty(model.End))
-            {
-                mes = "Поле 'End date' не вірний формат";
-                return mes;
-            }
+            }        
 
             if (endtimeRes.IsValid)
             {
                 dateEnd = dateEnd.AddHours(endtimeRes.Value.Hour);
                 dateEnd = dateEnd.AddMinutes(endtimeRes.Value.Minute);
 
-
             }
-            else if (!string.IsNullOrEmpty(model.EndTime))
-            {
-                mes = "Поле 'EndTime' не вірний формат";
-                return mes;
-            }
-
+        
             if (endRes.IsValid || endtimeRes.IsValid)
             {
                 updatePr.End = dateEnd;
             }
             var type = this.dbContext.Types.FirstOrDefault(t => t.Id == model.TypeId);
-
+           
+            
             updatePr.Title = model.Title;
             updatePr.Description = model.Description;
             updatePr.Organization = model.Organization;
+            updatePr.Role =  model.Role;
             updatePr.Link = model.Link;
-
 
             updatePr.ProjectTypeId = type.Id;
             updatePr.Updated = DateTime.Now;
@@ -174,6 +189,8 @@ namespace Erp_TEST.Controllers.Projecs
             return mes;
         }
 
+        //[Route("ProgectsCrud/Delete")]
+        [HttpDelete]
         public string DeleteAll(string userRole)
         {
             var prAll = dbContext.Projects
@@ -181,21 +198,26 @@ namespace Erp_TEST.Controllers.Projecs
                .ToList();
 
             string mess = "";
-
-            foreach (var pr in prAll)
+            if(userRole == "Admin")
             {
-                dbContext.Projects.Remove(pr);
+                foreach (var pr in prAll)
+                {
+                    dbContext.Projects.Remove(pr);
+                }
+                try
+                {
+                    dbContext.SaveChanges();
+                    mess = "Всі проекти видалено успішно";
+                }
+                catch (Exception ex)
+                {
+                    mess = ex.Message;                    
+                }
             }
-            try
+            else
             {
-                dbContext.SaveChanges();
-                mess = "Всі проекти видалено успішно";
-            }
-            catch (Exception ex)
-            {
-                mess = ex.Message;
-                return mess;
-            }            
+                mess = "Не має прав доступу для видалення!!!";
+            }           
 
             return mess;
         }

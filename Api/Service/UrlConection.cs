@@ -7,6 +7,7 @@ namespace Api.Service
 {
     public class UrlConection
     {
-        public string AddNewProject { get; set; }
+        public string UrlProjectConection { get; set; }
+        public string UrlFileConection { get; set; }
     }
 }
