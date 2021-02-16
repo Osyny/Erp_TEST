@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Erp_TEST", "Erp_TEST\Erp_TE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{41EFAEC9-DAC2-4231-8962-E91007E2EB24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModelService", "Model\ViewModelService.csproj", "{919AEF02-DEA2-49F1-B17A-F77E18ABFCD5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModelService", "Model\ViewModelService.csproj", "{919AEF02-DEA2-49F1-B17A-F77E18ABFCD5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Readme", "Readme", "{A681365C-7FF5-4AD7-8918-CCB0EAA9B740}"
+	ProjectSection(SolutionItems) = preProject
+		..\Readme.docx = ..\Readme.docx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
